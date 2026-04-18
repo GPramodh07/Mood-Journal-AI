@@ -27,7 +27,7 @@ const ELEVENLABS_VOICE_ID = process.env.ELEVENLABS_VOICE_ID || 'EXAVITQu4vr4xnSD
 
 // Prompt for making AI responses emotional and supportive
 const EMOTION_PROMPT_TEMPLATE =
-    "Act as an Advanced Emotional Intelligence Engine. Analyze the User Input: '{{USER_INPUT}}'. Write a warm, human response in exactly 3 short lines. Every line must gently help the user feel better, safer, and more hopeful. Use compassionate language, practical encouragement, and emotional reassurance. Do not use dramatic pity, panic words, or lines like 'Oh no'. Do not sound robotic or clinical. Keep each line concise, natural, and voice-friendly for speech synthesis.";
+    "Your Role: Emotion-aware response generator optimized for speed and clarity.\n\nInstruction:\nRead the user's input and respond with ONE short, natural sentence based on their emotion.\n\nRules:\n- If sad/anxious → give gentle reassurance.\n- If happy → amplify positivity.\n- If neutral → add light warmth.\n- Keep response under 18 words.\n- Use simple, direct language (no complex phrasing).\n- No metaphors, no poetic language.\n- No explanations, no labels.\n\nGoal:\nGenerate a fast, emotionally appropriate response with minimal latency.\n\nInput:\n{{USER_INPUT}}";
 
 // Check if API keys are loaded
 console.log('Key Check:', process.env.GEMINI_API_KEY ? '✅ GEMINI_API_KEY loaded' : '❌ GEMINI_API_KEY missing');
@@ -67,40 +67,13 @@ function extractTextFromGeminiResponse(response) {
     return '';
 }
 
-// Make sure the AI response is exactly 3 lines and positive
+// Make sure the AI response is clean and positive
 function normalizeEmotionResponse(text) {
     const cleaned = String(text || '').replace(/\s+/g, ' ').trim();
     if (!cleaned) return '';
 
-    const sentenceMatches = cleaned.match(/[^.!?]+[.!?]?/g) || [cleaned];
-    const lines = sentenceMatches
-        .map((line) => line.trim())
-        .filter(Boolean)
-        .map((line) => line.split(' ').slice(0, 16).join(' '));
-
-    // Fallback responses if AI gives bad output
-    const fallbackLines = [
-        'I am with you, and your feelings make complete sense right now.',
-        'You have already shown strength by naming what is heavy inside.',
-        'Take one slow breath, and let your shoulders soften for a moment.',
-        'You do not have to solve everything today, only the next small step.',
-        'There is still room for calm, clarity, and hope to return.'
-    ];
-
-    const safeLines = lines
-        .map((line) => {
-            const softened = line
-                .replace(/\boh no\b/gi, 'I hear you')
-                .replace(/\bthis is terrible\b/gi, 'this feels heavy');
-            return /[.!?]$/.test(softened) ? softened : `${softened}.`;
-        })
-        .slice(0, 3);
-
-    while (safeLines.length < 3) {
-        safeLines.push(fallbackLines[safeLines.length - 1]);
-    }
-
-    return safeLines.join('\n');
+    // For single sentence response, just return it cleaned
+    return cleaned;
 }
 
 // Generate AI response with retries and fallbacks
