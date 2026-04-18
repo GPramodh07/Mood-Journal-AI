@@ -7,10 +7,7 @@ Mood Journal AI is a secure journaling experience built for emotional support, n
 Users authenticate, share what they're feeling, and receive uplifting AI-generated responses spoken back in a human-like voice—all protected by a gatekeeper security system that safeguards API credits.
 
 ## Demo Video
-🎥 **[Watch the Demo](https://example.com/demo-video)** - See Mood Journal AI in action!
-
-## Live Project
-🌐 **[GitHub Repository](https://github.com/GPramodh07/Mood-Journal-AI)** - View the complete source code and documentation
+🎥 **[Demo Video Link]** - See Mood Journal AI in action! *(Link to be added)*
 
 ## Why It Matters
 In stressful moments, people often need immediate emotional reassurance.
@@ -33,7 +30,7 @@ This project demonstrates how AI can provide compassionate, low-friction support
 ## How It Works
 
 ### User Flow:
-1. **Login Portal** → User enters access code (HACK2026) at `login.html`
+1. **Login Portal** → User enters access code (HACK2026) at `index.html`
 2. **Session Verification** → Credentials stored in sessionStorage
 3. **Journal Entry** → User writes thoughts and clicks "Listen to AI"
 4. **API Security Check** → Backend validates `X-Access-Code` header
@@ -43,13 +40,13 @@ This project demonstrates how AI can provide compassionate, low-friction support
 
 ### Technical Architecture:
 ```text
-login.html (authentication)
+index.html (login page)
         |
         v
 sessionStorage.access_granted = true
         |
         v
-index.html (main app)
+home.html (journal app)
         |
         v
 fetch /api/journal
@@ -81,15 +78,15 @@ AI-Hackfest/
 │  ├─ package.json
 │  └─ package-lock.json
 ├─ frontend/
-│  ├─ login.html                (authentication portal)
-│  ├─ index.html                (main journal app)
+│  ├─ index.html                (login page - authentication portal)
+│  ├─ home.html                 (main journal app)
 │  └─ public/
 │     ├─ css/
 │     │  ├─ login.css           (login page styles)
-│     │  └─ index.css           (app styles - glassmorphic)
+│     │  └─ home.css            (app styles - glassmorphic)
 │     └─ js/
 │        ├─ login.js            (authentication logic)
-│        └─ index.js            (journal app + API calls)
+│        └─ home.js             (journal app + API calls)
 ├─ .env                         (API keys)
 ├─ .gitignore
 └─ README.md
@@ -97,9 +94,9 @@ AI-Hackfest/
 
 ## Security Architecture
 
-### Frontend Protection (`frontend/public/js/index.js`):
+### Frontend Protection (`frontend/public/js/home.js`):
 - Checks `sessionStorage.access_granted` on page load
-- Redirects unauthorized users to `login.html`
+- Redirects unauthorized users to `index.html`
 - Includes `X-Access-Code` header in all API requests
 
 ### Backend Middleware (`backend/server.js`):
@@ -136,7 +133,7 @@ PORT=5000
 For testing and evaluation, use these credentials:
 - **Access Code**: `HACK2026`
 - **Backend URL**: `http://localhost:5000`
-- **Frontend Entry**: `frontend/login.html`
+- **Frontend Entry**: `frontend/index.html`
 
 ## Run Locally
 
@@ -154,10 +151,10 @@ node server.js
 Server runs on `http://localhost:5000`
 
 ### Access Frontend:
-1. Open `frontend/login.html` in your browser
+1. Open `frontend/index.html` in your browser
 2. Enter access code: **`HACK2026`**
-3. Click "Unlock Access"
-4. You're now authenticated and can use the journal
+3. Click "Access" button
+4. You're now authenticated and redirected to the journal
 5. Write your thoughts and click **"Listen to AI"**
 
 ## API Reference
