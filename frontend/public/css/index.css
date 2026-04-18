@@ -1,0 +1,580 @@
+/* ============================================================================
+   MOOD JOURNAL AI - GLASSMORPHIC DESIGN
+   Premium Dark Theme with Deep Blue, Purple, and Neon Accents
+   ========================================================================== */
+
+/* ============================================================================
+   ROOT VARIABLES & TYPOGRAPHY
+   ========================================================================== */
+
+:root {
+    /* Color Palette */
+    --color-dark-bg: #0a0e27;
+    --color-deep-blue: #1a2855;
+    --color-purple-primary: #8b5cf6;
+    --color-purple-accent: #a78bfa;
+    --color-purple-neon: #c084fc;
+    --color-text-primary: #e0e7ff;
+    --color-text-secondary: #a0afc9;
+    --color-border: rgba(139, 92, 246, 0.3);
+    --color-border-hover: rgba(192, 132, 252, 0.6);
+
+    /* Gradients */
+    --gradient-bg: radial-gradient(135% 135% at 50% 0%, #1a2855 0%, #0a0e27 100%);
+    --gradient-card: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(167, 139, 250, 0.05) 100%);
+    --gradient-button: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
+    --gradient-glow: linear-gradient(135deg, #a78bfa 0%, #c084fc 100%);
+
+    /* Spacing */
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 1rem;
+    --spacing-md: 1.5rem;
+    --spacing-lg: 2rem;
+    --spacing-xl: 3rem;
+
+    /* Border Radius */
+    --radius-sm: 0.5rem;
+    --radius-md: 1rem;
+    --radius-lg: 1.5rem;
+    --radius-xl: 2rem;
+
+    /* Transitions */
+    --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-base: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* Shadows */
+    --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 10px 25px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.5);
+    --shadow-glow: 0 0 20px rgba(139, 92, 246, 0.3);
+    --shadow-glow-intense: 0 0 40px rgba(192, 132, 252, 0.5);
+}
+
+/* ============================================================================
+   RESET & GLOBAL STYLES
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+        'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+        sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background: var(--color-dark-bg);
+    color: var(--color-text-primary);
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* ============================================================================
+   BACKGROUND GRADIENT
+   ========================================================================== */
+
+.background-gradient {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--gradient-bg);
+    z-index: -1;
+}
+
+/* ============================================================================
+   CONTAINER & LAYOUT
+   ========================================================================== */
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: var(--spacing-lg);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xl);
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: var(--spacing-md);
+        gap: var(--spacing-lg);
+    }
+}
+
+/* ============================================================================
+   HEADER & TITLE
+   ========================================================================== */
+
+.header {
+    text-align: center;
+    padding: var(--spacing-lg) 0;
+    animation: fadeInDown 0.8s ease-out;
+}
+
+.title {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 700;
+    margin-bottom: var(--spacing-sm);
+    letter-spacing: -0.02em;
+}
+
+.title-glow {
+    background: var(--gradient-glow);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 0 30px rgba(192, 132, 252, 0.3);
+    filter: drop-shadow(0 0 20px rgba(139, 92, 246, 0.4));
+}
+
+.subtitle {
+    font-size: 1rem;
+    color: var(--color-text-secondary);
+    font-weight: 400;
+    animation: fadeInUp 0.8s ease-out 0.1s both;
+}
+
+/* ============================================================================
+   JOURNAL CARD - GLASSMORPHISM
+   ========================================================================== */
+
+.journal-card {
+    background: var(--gradient-card);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-xl);
+    box-shadow: var(--shadow-md);
+    animation: fadeIn 0.8s ease-out 0.2s both;
+    transition: all var(--transition-base);
+}
+
+.journal-card:hover {
+    border-color: var(--color-border-hover);
+    box-shadow: var(--shadow-lg), var(--shadow-glow);
+}
+
+@media (max-width: 768px) {
+    .journal-card {
+        padding: var(--spacing-lg);
+    }
+}
+
+/* ============================================================================
+   AUDIO STATUS INDICATOR
+   ========================================================================== */
+
+.audio-status-container {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-lg);
+    padding: var(--spacing-md);
+    background: rgba(139, 92, 246, 0.05);
+    border-radius: var(--radius-lg);
+    border: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+.audio-status {
+    position: relative;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pulse-ring {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background: radial-gradient(circle, var(--color-purple-neon), var(--color-purple-primary));
+    border-radius: 50%;
+    opacity: 0;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.pulse-ring::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: inherit;
+    border-radius: 50%;
+    animation: scalePulse 2s ease-in-out infinite;
+}
+
+.audio-status.active .pulse-ring {
+    opacity: 1;
+}
+
+.status-text {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    transition: color var(--transition-fast);
+}
+
+.audio-status.active ~ .status-text {
+    color: var(--color-purple-neon);
+    font-weight: 600;
+}
+
+/* ============================================================================
+   TEXTAREA SECTION
+   ========================================================================== */
+
+.textarea-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-xl);
+}
+
+.textarea-label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+.textarea-input {
+    width: 100%;
+    padding: var(--spacing-lg);
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--color-text-primary);
+    background: rgba(26, 40, 85, 0.4);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    resize: vertical;
+    font-family: inherit;
+    transition: all var(--transition-base);
+    max-height: 400px;
+    min-height: 200px;
+}
+
+.textarea-input::placeholder {
+    color: var(--color-text-secondary);
+    opacity: 0.7;
+}
+
+.textarea-input:focus {
+    outline: none;
+    border-color: var(--color-purple-accent);
+    background: rgba(26, 40, 85, 0.6);
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1), var(--shadow-glow);
+}
+
+.character-count {
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+    text-align: right;
+}
+
+/* ============================================================================
+   BUTTON SECTION
+   ========================================================================== */
+
+.button-section {
+    display: flex;
+    gap: var(--spacing-md);
+    flex-wrap: wrap;
+    margin-bottom: var(--spacing-lg);
+}
+
+@media (max-width: 568px) {
+    .button-section {
+        flex-direction: column;
+    }
+}
+
+/* LISTEN BUTTON - PRIMARY */
+.listen-button {
+    flex: 1;
+    min-width: 200px;
+    padding: var(--spacing-md) var(--spacing-lg);
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+    background: var(--gradient-button);
+    border: none;
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    box-shadow: var(--shadow-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    position: relative;
+    overflow: hidden;
+}
+
+.listen-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+    );
+    transition: left var(--transition-slow);
+}
+
+.listen-button:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg), var(--shadow-glow-intense);
+}
+
+.listen-button:hover::before {
+    left: 100%;
+}
+
+.listen-button:active {
+    transform: translateY(0);
+}
+
+.listen-button[data-state='loading'] {
+    opacity: 0.8;
+    cursor: not-allowed;
+}
+
+.listen-button[data-state='loading'] .button-text::after {
+    content: '';
+    display: inline-block;
+    width: 1.2em;
+    height: 0.2em;
+    margin-left: 0.4em;
+    background: linear-gradient(
+        90deg,
+        currentColor 0%,
+        currentColor 25%,
+        transparent 25%,
+        transparent 50%,
+        currentColor 50%,
+        currentColor 75%,
+        transparent 75%
+    );
+    background-size: 0.4em 100%;
+    background-repeat: repeat-x;
+    animation: shimmer 1s infinite;
+}
+
+.button-text {
+    font-weight: 600;
+}
+
+.button-icon {
+    font-size: 1.2em;
+    transition: transform var(--transition-base);
+}
+
+.listen-button:hover .button-icon {
+    transform: scale(1.15) rotate(-10deg);
+}
+
+.listen-button[data-state='loading'] .button-icon {
+    animation: spin 1.5s linear infinite;
+}
+
+/* CLEAR BUTTON - SECONDARY */
+.clear-button {
+    min-width: 150px;
+    padding: var(--spacing-md) var(--spacing-lg);
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-purple-accent);
+    background: transparent;
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: all var(--transition-base);
+}
+
+.clear-button:hover {
+    border-color: var(--color-purple-neon);
+    background: rgba(139, 92, 246, 0.1);
+    color: var(--color-purple-neon);
+}
+
+.clear-button:active {
+    transform: scale(0.98);
+}
+
+/* ============================================================================
+   FEEDBACK SECTION
+   ========================================================================== */
+
+.feedback-section {
+    padding: var(--spacing-lg);
+    background: rgba(139, 92, 246, 0.1);
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    border-radius: var(--radius-lg);
+    margin-top: var(--spacing-lg);
+    animation: slideInUp 0.4s ease-out;
+}
+
+.feedback-message {
+    color: var(--color-text-primary);
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+/* ============================================================================
+   AUDIO PLAYER (Hidden)
+   ========================================================================== */
+
+.audio-player {
+    display: none;
+}
+
+/* ============================================================================
+   FOOTER
+   ========================================================================== */
+
+.footer {
+    text-align: center;
+    padding: var(--spacing-xl) 0 var(--spacing-lg);
+    color: var(--color-text-secondary);
+    font-size: 0.85rem;
+    animation: fadeInUp 0.8s ease-out 0.3s both;
+}
+
+/* ============================================================================
+   ANIMATIONS
+   ========================================================================== */
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0%,
+    100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.4;
+    }
+}
+
+@keyframes scalePulse {
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 0.8;
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 0.4;
+    }
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: 0%;
+    }
+    100% {
+        background-position: 100%;
+    }
+}
+
+/* ============================================================================
+   ACCESSIBILITY
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+@media (prefers-color-scheme: light) {
+    :root {
+        --color-dark-bg: #f8fafc;
+        --color-deep-blue: #e2e8f0;
+        --color-text-primary: #1e293b;
+        --color-text-secondary: #64748b;
+    }
+
+    .background-gradient {
+        background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+    }
+}

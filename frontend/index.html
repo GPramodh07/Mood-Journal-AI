@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mood Journal AI</title>
+    <link rel="stylesheet" href="./public/css/index.css">
+</head>
+<body>
+    <div class="background-gradient"></div>
+    
+    <div class="container">
+        <!-- Header Section -->
+        <header class="header">
+            <h1 class="title">
+                <span class="title-glow">Mood Journal AI</span>
+            </h1>
+            <p class="subtitle">Share your thoughts, let AI understand your mood</p>
+        </header>
+
+        <!-- Main Journal Card -->
+        <main class="journal-card">
+            <!-- Audio Status Indicator -->
+            <div class="audio-status-container">
+                <div class="audio-status" id="audioStatus">
+                    <div class="pulse-ring"></div>
+                </div>
+                <span class="status-text" id="statusText">Ready</span>
+            </div>
+
+            <!-- Textarea Section -->
+            <section class="textarea-section">
+                <label for="userThoughts" class="textarea-label">Your Thoughts</label>
+                <textarea
+                    id="userThoughts"
+                    class="textarea-input"
+                    placeholder="Write what's on your mind... Share your feelings, thoughts, or concerns. The AI will listen and respond thoughtfully."
+                    rows="10"
+                ></textarea>
+                <div class="character-count">
+                    <span id="charCount">0</span> / 5000 characters
+                </div>
+            </section>
+
+            <!-- Button Section -->
+            <section class="button-section">
+                <button id="listenBtn" class="listen-button" data-state="idle">
+                    <span class="button-text">Listen to AI</span>
+                    <span class="button-icon">🎧</span>
+                </button>
+                <button id="clearBtn" class="clear-button">Clear</button>
+            </section>
+
+            <!-- Audio Player (Hidden) -->
+            <audio id="audioPlayer" class="audio-player"></audio>
+
+            <!-- Response Feedback -->
+            <div class="feedback-section" id="feedbackSection" style="display: none;">
+                <p id="feedbackMessage" class="feedback-message"></p>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Built with ✨ for the AI Hackfest</p>
+        </footer>
+    </div>
+
+    <script src="./public/js/index.js"></script>
+</body>
+</html>
