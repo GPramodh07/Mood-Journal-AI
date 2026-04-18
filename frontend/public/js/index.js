@@ -1,19 +1,4 @@
-/**
- * ============================================================================
- * MOOD JOURNAL AI - Frontend JavaScript
- * 
- * Handles:
- * - User input capture and validation
- * - API communication with backend
- * - Audio Blob processing and playback
- * - UI state management and animations
- * ============================================================================
- */
-
-// ============================================================================
-// STATE MANAGEMENT
-// ============================================================================
-
+// App state to keep track of things
 const AppState = {
     isListening: false,
     isLoading: false,
@@ -21,10 +6,7 @@ const AppState = {
     maxCharacters: 5000,
 };
 
-// ============================================================================
-// DOM ELEMENTS
-// ============================================================================
-
+// Get DOM elements
 const DOM = {
     userThoughts: document.getElementById('userThoughts'),
     listenBtn: document.getElementById('listenBtn'),
@@ -37,18 +19,12 @@ const DOM = {
     feedbackMessage: document.getElementById('feedbackMessage'),
 };
 
-// ============================================================================
-// CHARACTER COUNT TRACKER
-// ============================================================================
-
-/**
- * Update character count display and enforce maximum
- */
+// Update character count display
 function updateCharacterCount() {
     const length = DOM.userThoughts.value.length;
     DOM.charCount.textContent = length;
 
-    // Enforce max limit
+    // Don't let them type more than max
     if (length > AppState.maxCharacters) {
         DOM.userThoughts.value = DOM.userThoughts.value.substring(
             0,
@@ -60,28 +36,13 @@ function updateCharacterCount() {
 
 DOM.userThoughts.addEventListener('input', updateCharacterCount);
 
-// ============================================================================
-// AUDIO STATUS INDICATOR
-// ============================================================================
-
-/**
- * Update audio status indicator and text
- * @param {boolean} isActive - Whether AI is currently speaking
- * @param {string} text - Status text to display
- */
+// Update the audio status thing
 function setAudioStatus(isActive, text = 'Ready') {
     DOM.audioStatus.classList.toggle('active', isActive);
     DOM.statusText.textContent = text;
 }
 
-// ============================================================================
-// BUTTON STATE MANAGEMENT
-// ============================================================================
-
-/**
- * Update button state and visual feedback
- * @param {string} state - 'idle', 'loading', or 'listening'
- */
+// Change button appearance based on state
 function updateButtonState(state) {
     DOM.listenBtn.setAttribute('data-state', state);
 
@@ -109,15 +70,7 @@ function updateButtonState(state) {
     DOM.listenBtn.disabled = config.disabled;
 }
 
-// ============================================================================
-// FEEDBACK DISPLAY
-// ============================================================================
-
-/**
- * Show or hide feedback message
- * @param {string|null} message - Message to display (null to hide)
- * @param {string} type - 'success', 'error', or 'info'
- */
+// Show feedback messages
 function showFeedback(message, type = 'info') {
     if (!message) {
         DOM.feedbackSection.style.display = 'none';
@@ -129,18 +82,11 @@ function showFeedback(message, type = 'info') {
     DOM.feedbackSection.style.display = 'block';
 }
 
-// ============================================================================
-// API COMMUNICATION
-// ============================================================================
-
-/**
- * Send user thoughts to backend and get AI response
- * @returns {Promise<boolean>} - Success status
- */
+// Send journal entry to backend
 async function sendJournalEntry() {
     const thoughts = DOM.userThoughts.value.trim();
 
-    // Validation
+    // Check if they wrote something
     if (!thoughts) {
         showFeedback('Please write something before listening to the AI.', 'error');
         return false;
@@ -152,15 +98,15 @@ async function sendJournalEntry() {
     }
 
     try {
-        // Update UI for loading state
+        // Show loading
         AppState.isLoading = true;
         updateButtonState('loading');
         setAudioStatus(false, 'Requesting...');
         showFeedback(null);
 
-        console.log('📤 Sending journal entry to backend...');
+        console.log('Sending journal entry...');
 
-        // Make API request
+        // Make the API call
         const response = await fetch('http://localhost:5000/api/journal', {
             method: 'POST',
             headers: {
@@ -172,14 +118,14 @@ async function sendJournalEntry() {
             }),
         });
 
-        // Handle HTTP errors
+        // Check for errors
         if (!response.ok) {
             throw new Error(
                 `Backend error: ${response.status} ${response.statusText}`
             );
         }
 
-        // Validate content type
+        // Make sure it's audio
         const contentType = response.headers.get('content-type');
         if (!contentType || !contentType.includes('audio/mpeg')) {
             throw new Error(
@@ -187,22 +133,22 @@ async function sendJournalEntry() {
             );
         }
 
-        // Extract audio blob
+        // Get the audio data
         const audioBlob = await response.blob();
 
         if (audioBlob.size === 0) {
             throw new Error('Received empty audio response');
         }
 
-        console.log('✅ Received audio blob:', audioBlob.size, 'bytes');
+        console.log('Got audio blob:', audioBlob.size, 'bytes');
 
-        // Store and play audio
+        // Play the audio
         AppState.currentAudioBlob = audioBlob;
         playAudio(audioBlob);
 
         return true;
     } catch (error) {
-        console.error('❌ API Error:', error);
+        console.error('API Error:', error);
         showFeedback(
             `Error: ${error.message}. Check that the backend is running on port 5000.`,
             'error'
@@ -215,21 +161,14 @@ async function sendJournalEntry() {
     }
 }
 
-// ============================================================================
-// AUDIO PLAYBACK
-// ============================================================================
-
-/**
- * Play audio blob with status updates
- * @param {Blob} audioBlob - Audio data to play
- */
+// Play the audio
 function playAudio(audioBlob) {
     try {
-        // Create object URL from blob
+        // Create URL for the blob
         const audioUrl = URL.createObjectURL(audioBlob);
-        console.log('🎧 Playing audio...');
+        console.log('Playing audio...');
 
-        // Configure audio player
+        // Set up the player
         DOM.audioPlayer.src = audioUrl;
         DOM.audioPlayer.onplay = () => {
             updateButtonState('listening');
@@ -239,66 +178,54 @@ function playAudio(audioBlob) {
         DOM.audioPlayer.onended = () => {
             updateButtonState('idle');
             setAudioStatus(false, 'Finished');
-            showFeedback('✨ AI finished speaking. Feel free to share more!', 'success');
-            URL.revokeObjectURL(audioUrl); // Clean up memory
+            showFeedback('AI finished speaking. Feel free to share more!', 'success');
+            URL.revokeObjectURL(audioUrl); // Clean up
         };
 
         DOM.audioPlayer.onerror = (event) => {
-            console.error('❌ Audio playback error:', event);
+            console.error('Audio playback error:', event);
             updateButtonState('idle');
             setAudioStatus(false, 'Error');
             showFeedback('Error playing audio. Please try again.', 'error');
         };
 
-        // Start playback
+        // Start playing
         DOM.audioPlayer.play().catch((err) => {
-            console.error('❌ Play error:', err);
+            console.error('Play error:', err);
             showFeedback('Could not play audio. Browser may have autoplay restrictions.', 'error');
             updateButtonState('idle');
         });
     } catch (error) {
-        console.error('❌ Audio setup error:', error);
+        console.error('Audio setup error:', error);
         showFeedback('Error setting up audio playback.', 'error');
         updateButtonState('idle');
     }
 }
 
-// ============================================================================
-// CLEAR FUNCTIONALITY
-// ============================================================================
-
-/**
- * Clear textarea and reset state
- */
+// Clear the journal
 function clearJournal() {
     DOM.userThoughts.value = '';
     updateCharacterCount();
     showFeedback(null);
     updateButtonState('idle');
     setAudioStatus(false, 'Ready');
-    
+
     // Stop any playing audio
     if (!DOM.audioPlayer.paused) {
         DOM.audioPlayer.pause();
         DOM.audioPlayer.src = '';
     }
-    
-    console.log('🗑️  Journal cleared');
+
+    console.log('Journal cleared');
 }
 
 DOM.clearBtn.addEventListener('click', clearJournal);
 
-// ============================================================================
-// EVENT LISTENERS
-// ============================================================================
-
-/**
- * Send journal entry on button click
- */
+// Handle button click
 DOM.listenBtn.addEventListener('click', async () => {
-    // Prevent multiple simultaneous requests
+    // Don't let them click twice
     if (AppState.isLoading || AppState.isListening) {
-        console.warn('⚠️  Request already in progress');
+        console.warn('Request already in progress');
         return;
     }
 
@@ -308,9 +235,7 @@ DOM.listenBtn.addEventListener('click', async () => {
     }
 });
 
-/**
- * Allow Enter+Shift to submit (optional UX enhancement)
- */
+// Allow Shift+Enter to submit
 DOM.userThoughts.addEventListener('keydown', (event) => {
     if (event.key === 'Enter' && event.shiftKey && !AppState.isLoading) {
         event.preventDefault();

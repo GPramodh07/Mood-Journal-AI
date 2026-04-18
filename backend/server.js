@@ -1,14 +1,18 @@
+// Load environment variables from .env file
 require('dotenv').config();
 
+// Import required packages
 const express = require('express');
 const { GoogleGenAI } = require('@google/genai');
 const axios = require('axios');
 const cors = require('cors');
 
+// Create Express app
 const app = express();
 app.use(cors());
 app.use(express.json({ limit: '1mb' }));
 
+// Server configuration
 const PORT = Number(process.env.PORT || 5000);
 const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-3-flash';
 const GEMINI_FALLBACK_MODELS = [
@@ -21,18 +25,23 @@ const GEMINI_MAX_RETRIES_PER_MODEL = 2;
 
 const ELEVENLABS_VOICE_ID = process.env.ELEVENLABS_VOICE_ID || 'EXAVITQu4vr4xnSDxMaL';
 
+// Prompt for making AI responses emotional and supportive
 const EMOTION_PROMPT_TEMPLATE =
     "Act as an Advanced Emotional Intelligence Engine. Analyze the User Input: '{{USER_INPUT}}'. Write a warm, human response in exactly 3 short lines. Every line must gently help the user feel better, safer, and more hopeful. Use compassionate language, practical encouragement, and emotional reassurance. Do not use dramatic pity, panic words, or lines like 'Oh no'. Do not sound robotic or clinical. Keep each line concise, natural, and voice-friendly for speech synthesis.";
 
+// Check if API keys are loaded
 console.log('Key Check:', process.env.GEMINI_API_KEY ? '✅ GEMINI_API_KEY loaded' : '❌ GEMINI_API_KEY missing');
 console.log('Key Check:', process.env.ELEVENLABS_API_KEY ? '✅ ELEVENLABS_API_KEY loaded' : '❌ ELEVENLABS_API_KEY missing');
 
+// Initialize Gemini AI
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
+// Helper function for delays
 function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+// Extract text from Gemini's response (it's nested weirdly)
 function extractTextFromGeminiResponse(response) {
     if (!response) return '';
 
@@ -58,6 +67,7 @@ function extractTextFromGeminiResponse(response) {
     return '';
 }
 
+// Make sure the AI response is exactly 3 lines and positive
 function normalizeEmotionResponse(text) {
     const cleaned = String(text || '').replace(/\s+/g, ' ').trim();
     if (!cleaned) return '';
@@ -68,6 +78,7 @@ function normalizeEmotionResponse(text) {
         .filter(Boolean)
         .map((line) => line.split(' ').slice(0, 16).join(' '));
 
+    // Fallback responses if AI gives bad output
     const fallbackLines = [
         'I am with you, and your feelings make complete sense right now.',
         'You have already shown strength by naming what is heavy inside.',
@@ -92,6 +103,7 @@ function normalizeEmotionResponse(text) {
     return safeLines.join('\n');
 }
 
+// Generate AI response with retries and fallbacks
 async function generateEmotionAwareReply(userText) {
     let lastError;
 
@@ -148,6 +160,7 @@ async function generateEmotionAwareReply(userText) {
     throw lastError || new Error('No supported Gemini model is available for this API key.');
 }
 
+// Convert text to speech using ElevenLabs
 async function synthesizeVoice(text) {
     return axios({
         method: 'post',
@@ -172,6 +185,7 @@ async function synthesizeVoice(text) {
     });
 }
 
+// Main API endpoint for journal entries
 app.post('/api/journal', async (req, res) => {
     const message = typeof req.body?.message === 'string' ? req.body.message : req.body?.thoughts;
     const userText = String(message || '').trim();
@@ -200,6 +214,7 @@ app.post('/api/journal', async (req, res) => {
     }
 });
 
+// Start the server
 app.listen(PORT, () => {
     console.log(`🚀 Server Glowing on ${PORT}`);
 });
