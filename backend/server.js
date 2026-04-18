@@ -12,6 +12,22 @@ const app = express();
 app.use(cors());
 app.use(express.json({ limit: '1mb' }));
 
+// Check if request has valid access code
+const ACCESS_CODE = 'HACK2026';
+
+function checkAccessCode(req, res, next) {
+    const providedCode = req.headers['x-access-code'];
+
+    // If no code or wrong code, block the request
+    if (!providedCode || providedCode !== ACCESS_CODE) {
+        console.warn('Blocked: Invalid or missing access code');
+        return res.status(403).json({ error: 'Access denied. Invalid or missing access code.' });
+    }
+
+    // Code is good, let them through
+    next();
+}
+
 // Server configuration
 const PORT = Number(process.env.PORT || 5000);
 const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-3-flash';
@@ -25,7 +41,7 @@ const GEMINI_MAX_RETRIES_PER_MODEL = 2;
 
 const ELEVENLABS_VOICE_ID = process.env.ELEVENLABS_VOICE_ID || 'EXAVITQu4vr4xnSDxMaL';
 
-// Prompt for making AI responses emotional and supportive
+// The prompt we send to Gemini to make it give emotional responses
 const EMOTION_PROMPT_TEMPLATE =
     "Act as an Advanced Emotional Intelligence Engine. Analyze the User Input: '{{USER_INPUT}}'. Write a warm, human response in exactly 3 short lines. Every line must gently help the user feel better, safer, and more hopeful. Use compassionate language, practical encouragement, and emotional reassurance. Do not use dramatic pity, panic words, or lines like 'Oh no'. Do not sound robotic or clinical. Keep each line concise, natural, and voice-friendly for speech synthesis.";
 
@@ -41,7 +57,7 @@ function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-// Extract text from Gemini's response (it's nested weirdly)
+// Pull the actual text out of Gemini's response object
 function extractTextFromGeminiResponse(response) {
     if (!response) return '';
 
@@ -67,7 +83,7 @@ function extractTextFromGeminiResponse(response) {
     return '';
 }
 
-// Make sure the AI response is exactly 3 lines and positive
+// Make sure the AI response is clean and formatted nicely
 function normalizeEmotionResponse(text) {
     const cleaned = String(text || '').replace(/\s+/g, ' ').trim();
     if (!cleaned) return '';
@@ -103,7 +119,7 @@ function normalizeEmotionResponse(text) {
     return safeLines.join('\n');
 }
 
-// Generate AI response with retries and fallbacks
+// Generate AI response with retries if something goes wrong
 async function generateEmotionAwareReply(userText) {
     let lastError;
 
@@ -160,7 +176,7 @@ async function generateEmotionAwareReply(userText) {
     throw lastError || new Error('No supported Gemini model is available for this API key.');
 }
 
-// Convert text to speech using ElevenLabs
+// Convert text to audio using ElevenLabs
 async function synthesizeVoice(text) {
     return axios({
         method: 'post',
@@ -185,8 +201,8 @@ async function synthesizeVoice(text) {
     });
 }
 
-// Main API endpoint for journal entries
-app.post('/api/journal', async (req, res) => {
+// Main API endpoint (protected by access code check)
+app.post('/api/journal', checkAccessCode, async (req, res) => {
     const message = typeof req.body?.message === 'string' ? req.body.message : req.body?.thoughts;
     const userText = String(message || '').trim();
 

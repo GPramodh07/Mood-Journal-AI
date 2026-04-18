@@ -3,69 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mood Journal AI</title>
-    <link rel="stylesheet" href="./public/css/index.css">
+    <title>Mood Journal AI - Access Portal</title>
+    <link rel="stylesheet" href="./public/css/login.css">
 </head>
 <body>
-    <div class="background-gradient"></div>
-    
-    <div class="container">
-        <!-- Header Section -->
-        <header class="header">
-            <h1 class="title">
-                <span class="title-glow">Mood Journal AI</span>
-            </h1>
-            <p class="subtitle">Share your thoughts, let AI understand your mood</p>
-        </header>
+    <div class="animated-bg"></div>
 
-        <!-- Main Journal Card -->
-        <main class="journal-card">
-            <!-- Audio Status Indicator -->
-            <div class="audio-status-container">
-                <div class="audio-status" id="audioStatus">
-                    <div class="pulse-ring"></div>
-                </div>
-                <span class="status-text" id="statusText">Ready</span>
+    <div class="login-container">
+        <div class="login-header">
+            <h1 class="login-title">Mood Journal AI</h1>
+            <p class="login-subtitle">Access Portal</p>
+        </div>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="accessCode" class="form-label">Access Code</label>
+                <input
+                    type="password"
+                    id="accessCode"
+                    class="form-input"
+                    placeholder="Enter your access code"
+                    autocomplete="off"
+                    required
+                />
+                <div id="errorMessage" class="error-message"></div>
             </div>
 
-            <!-- Textarea Section -->
-            <section class="textarea-section">
-                <label for="userThoughts" class="textarea-label">Your Thoughts</label>
-                <textarea
-                    id="userThoughts"
-                    class="textarea-input"
-                    placeholder="Write what's on your mind... Share your feelings, thoughts, or concerns. The AI will listen and respond thoughtfully."
-                    rows="10"
-                ></textarea>
-                <div class="character-count">
-                    <span id="charCount">0</span> / 5000 characters
-                </div>
-            </section>
+            <button type="submit" class="access-btn" id="submitBtn">
+                Unlock Access
+            </button>
+        </form>
 
-            <!-- Button Section -->
-            <section class="button-section">
-                <button id="listenBtn" class="listen-button" data-state="idle">
-                    <span class="button-text">Listen to AI</span>
-                    <span class="button-icon">🎧</span>
-                </button>
-                <button id="clearBtn" class="clear-button">Clear</button>
-            </section>
-
-            <!-- Audio Player (Hidden) -->
-            <audio id="audioPlayer" class="audio-player"></audio>
-
-            <!-- Response Feedback -->
-            <div class="feedback-section" id="feedbackSection" style="display: none;">
-                <p id="feedbackMessage" class="feedback-message"></p>
-            </div>
-        </main>
-
-        <!-- Footer -->
-        <footer class="footer">
-            <p>Built with ❤️ for the AI Hackfest</p>
-        </footer>
+        <p class="info-text">
+            Enter the access code to begin your mood journaling experience.
+        </p>
     </div>
 
-    <script src="./public/js/index.js"></script>
+    <script src="./public/js/login.js"></script>
 </body>
 </html>

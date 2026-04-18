@@ -1,9 +1,15 @@
+// Check if user is authenticated
+if (sessionStorage.getItem('access_granted') !== 'true') {
+    window.location.href = '../index.html';
+}
+
 // App state to keep track of things
 const AppState = {
     isListening: false,
     isLoading: false,
     currentAudioBlob: null,
     maxCharacters: 5000,
+    accessCode: 'HACK2026',
 };
 
 // Get DOM elements
@@ -106,11 +112,12 @@ async function sendJournalEntry() {
 
         console.log('Sending journal entry...');
 
-        // Make the API call
+        // Make the API call with the security code in headers
         const response = await fetch('http://localhost:5000/api/journal', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'X-Access-Code': AppState.accessCode,
             },
             body: JSON.stringify({
                 thoughts: thoughts,
@@ -242,45 +249,3 @@ DOM.userThoughts.addEventListener('keydown', (event) => {
         DOM.listenBtn.click();
     }
 });
-
-// ============================================================================
-// INITIALIZATION
-// ============================================================================
-
-/**
- * Initialize application
- */
-function initialize() {
-    console.log('🚀 Mood Journal AI loaded');
-    console.log('📡 Backend: http://localhost:5000');
-    
-    updateButtonState('idle');
-    setAudioStatus(false, 'Ready');
-    updateCharacterCount();
-}
-
-// Run initialization when DOM is ready
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initialize);
-} else {
-    initialize();
-}
-
-// ============================================================================
-// DEBUGGING UTILITIES (Development only)
-// ============================================================================
-
-/**
- * Log current app state (useful for debugging)
- */
-window.debugAppState = () => {
-    console.table({
-        isLoading: AppState.isLoading,
-        isListening: AppState.isListening,
-        hasAudio: !!AppState.currentAudioBlob,
-        audioSize: AppState.currentAudioBlob?.size || 'N/A',
-        textLength: DOM.userThoughts.value.length,
-    });
-};
-
-console.log('💡 Use debugAppState() in console to check current state');
